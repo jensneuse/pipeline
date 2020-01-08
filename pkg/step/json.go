@@ -10,11 +10,18 @@ import (
 
 type JsonStep struct {
 	Template string `json:"template"`
+	tmpl *template.Template
 }
 
 func UnmarshalJsonStep(reader io.Reader) (JsonStep,error){
 	var step JsonStep
+	step.tmpl = template.New("")
+	step.tmpl.Funcs(sprig.TxtFuncMap())
 	err := json.NewDecoder(reader).Decode(&step)
+	if err != nil {
+		return step,err
+	}
+	step.tmpl,err = step.tmpl.Parse(step.Template)
 	return step,err
 }
 
@@ -24,17 +31,12 @@ func (j JsonStep) Invoke(reader io.Reader, writer io.Writer) error {
 		return err
 	}
 
-	in := map[string]interface{}{}
+	var in interface{}
 
 	err = json.Unmarshal(data,&in)
 	if err != nil {
 		return err
 	}
 
-	tmpl,err := template.New("").Funcs(sprig.TxtFuncMap()).Parse(j.Template)
-	if err != nil {
-		return err
-	}
-
-	return tmpl.Execute(writer,in)
+	return j.tmpl.Execute(writer,in)
 }

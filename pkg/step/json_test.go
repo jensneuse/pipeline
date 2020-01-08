@@ -7,14 +7,17 @@ import (
 )
 
 func TestJsonStep_Invoke(t *testing.T) {
-	input := `{"foo":"bar"}`
 
-	step := JsonStep{
-		Template: `{"baz":"{{ .foo }}"}`,
+	input := `{"foo":"bar"}`
+	config := `{"template":"{\"baz\":\"{{ .foo }}\"}"}`
+
+	step,err := UnmarshalJsonStep(strings.NewReader(config))
+	if err != nil {
+		t.Fatal(err)
 	}
 
 	buf := bytes.Buffer{}
-	err := step.Invoke(strings.NewReader(input),&buf)
+	err = step.Invoke(strings.NewReader(input),&buf)
 	if err != nil {
 		t.Fatal(err)
 	}
