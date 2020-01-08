@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"github.com/Masterminds/sprig"
-	"github.com/jensneuse/pipeline/pkg/pipeline/step"
+	"github.com/jensneuse/pipeline/pkg/step"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
