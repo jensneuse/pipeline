@@ -1,0 +1,29 @@
+{
+   "steps": [
+      {
+         "config": {
+            "template": "{\n    \"url\": \"{{ .url }}\",\n    \"method\": \"POST\",\n    \"body\" : {\n        \"policies\": {\n            {{ range $i, $e := .body.policies }}\n            {{ if $i }},{{ end }}\n            {{ with $e }}\n            \"{{ .id }}\": {\n                \"id\": {{ .id }},\n                \"name\": \"{{ .name }}\"\n            }\n            {{ end }}\n            {{ end }}\n        }\n    }\n}\n"
+         },
+         "kind": "JSON"
+      },
+      {
+         "config": {
+            "default_method": "GET",
+            "default_timeout": 10000000000
+         },
+         "kind": "HTTP"
+      },
+      {
+         "config": {
+            "template": "{\n    \"policies\": [\n        {{ $first := true }}\n        {{ range $key, $value := .body.policies }}\n        {{ if $first }}{{ $first = false }}{{ else }},{{ end }}\n        {\n            \"id\": {{ $key }},\n            \"name\": \"{{ $value.name }}\"\n        }\n        {{ end }}\n    ]\n}\n"
+         },
+         "kind": "JSON"
+      },
+      {
+         "config": {
+            "template": "{{ toPrettyJson . }}"
+         },
+         "kind": "JSON"
+      }
+   ]
+}
