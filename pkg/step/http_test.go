@@ -50,7 +50,13 @@ func TestHttpStep_Invoke(t *testing.T) {
 	if output.StatusCode != http.StatusOK {
 		t.Fatal("want 200 OK")
 	}
-	if output.Body != outBody {
+
+	outputBody,err := json.Marshal(output.Body)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if string(outputBody) != outBody {
 		t.Fatalf("want: %s, got: %s\n",outBody,output.Body)
 	}
 }
