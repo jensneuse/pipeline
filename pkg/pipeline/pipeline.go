@@ -78,10 +78,6 @@ func (p *Pipeline) Run (reader io.Reader,writer io.Writer) error {
 			return err
 		}
 		writeBuf.Reset()
-		intermediate := readBuf.String()
-		if intermediate == "" {
-
-		}
 	}
 
 	_,err = readBuf.WriteTo(writer)
