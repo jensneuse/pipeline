@@ -45,6 +45,8 @@ func (p *Pipeline) FromConfig(reader io.Reader) error {
 			next, err = step.UnmarshalJsonStep(bytes.NewReader(config.Steps[i].Config))
 		case "HTTP":
 			next, err = step.UnmarshalHttpStep(bytes.NewReader(config.Steps[i].Config))
+		case "NOOP":
+			next = step.NoOpStep{}
 		}
 		if err != nil {
 			return err
