@@ -1,5 +1,5 @@
-// package pipeline facilitates building and invoking a pipline
-package pipeline
+// package pipe initializes, configures and runs a pipeline
+package pipe
 
 import (
 	"bytes"
