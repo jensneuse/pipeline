@@ -2,5 +2,6 @@
 [![CI](https://github.com/jensneuse/pipeline/workflows/ci/badge.svg)](https://github.com/jensneuse/pipeline/workflows/ci/badge.svg)
 # pipeline
 
-Similar to UNIX pipelines but configurable via JSON.
+Unix pipelines in golang, configured by json.
+
 See godocs for more info.
