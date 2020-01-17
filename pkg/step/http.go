@@ -11,27 +11,34 @@ import (
 
 type HttpStep struct {
 	DefaultTimeout time.Duration `json:"default_timeout"`
-	DefaultMethod string `json:"default_method"`
+	DefaultMethod  string        `json:"default_method"`
 }
 
-func UnmarshalHttpStep(reader io.Reader) (HttpStep,error){
+func UnmarshalHttpStep(reader io.Reader) (HttpStep, error) {
 	var step HttpStep
 	err := json.NewDecoder(reader).Decode(&step)
-	return step,err
+	return step, err
+}
+
+func NewHTTP(defaultTimeout time.Duration, defaultMethod string) HttpStep {
+	return HttpStep{
+		DefaultTimeout: defaultTimeout,
+		DefaultMethod:  defaultMethod,
+	}
 }
 
 type HttpStepInput struct {
-	Timeout time.Duration `json:"timeout"`
-	Method string `json:"method"`
-	URL string `json:"url"`
-	Body map[string]interface{} `json:"body"`
-	Header http.Header `json:"header"`
+	Timeout time.Duration          `json:"timeout"`
+	Method  string                 `json:"method"`
+	URL     string                 `json:"url"`
+	Body    map[string]interface{} `json:"body"`
+	Header  http.Header            `json:"header"`
 }
 
 type HttpStepOutput struct {
-	StatusCode int `json:"status_code"`
-	Header http.Header `json:"header"`
-	Body map[string]interface{} `json:"body"`
+	StatusCode int                    `json:"status_code"`
+	Header     http.Header            `json:"header"`
+	Body       map[string]interface{} `json:"body"`
 }
 
 func (h HttpStep) Invoke(reader io.Reader, writer io.Writer) error {
@@ -42,12 +49,12 @@ func (h HttpStep) Invoke(reader io.Reader, writer io.Writer) error {
 	}
 
 	client := h.client(config)
-	req,err := h.request(config)
+	req, err := h.request(config)
 	if err != nil {
 		return err
 	}
 
-	res,err := client.Do(req)
+	res, err := client.Do(req)
 	if err != nil {
 		return err
 	}
@@ -57,18 +64,18 @@ func (h HttpStep) Invoke(reader io.Reader, writer io.Writer) error {
 	var out HttpStepOutput
 	out.StatusCode = res.StatusCode
 	out.Header = res.Header
-	body,err := ioutil.ReadAll(res.Body)
+	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		return err
 	}
-	err = json.Unmarshal(body,&out.Body)
+	err = json.Unmarshal(body, &out.Body)
 	if err != nil {
 		return err
 	}
 	return json.NewEncoder(writer).Encode(out)
 }
 
-func (h *HttpStep) client (config HttpStepInput) http.Client {
+func (h *HttpStep) client(config HttpStepInput) http.Client {
 
 	timeout := h.DefaultTimeout
 	if config.Timeout != 0 {
@@ -76,11 +83,11 @@ func (h *HttpStep) client (config HttpStepInput) http.Client {
 	}
 
 	return http.Client{
-		Timeout:timeout,
+		Timeout: timeout,
 	}
 }
 
-func (h *HttpStep) request (config HttpStepInput) (*http.Request,error) {
+func (h *HttpStep) request(config HttpStepInput) (*http.Request, error) {
 	method := h.DefaultMethod
 	if config.Method != "" {
 		method = config.Method
@@ -93,19 +100,19 @@ func (h *HttpStep) request (config HttpStepInput) (*http.Request,error) {
 		buf := &bytes.Buffer{}
 		err := json.NewEncoder(buf).Encode(config.Body)
 		if err != nil {
-			return nil,err
+			return nil, err
 		}
 		body = buf
 	}
 
-	req,err := http.NewRequest(method,url,body)
+	req, err := http.NewRequest(method, url, body)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 
 	if config.Header != nil {
 		req.Header = config.Header
 	}
 
-	return req,nil
+	return req, nil
 }
