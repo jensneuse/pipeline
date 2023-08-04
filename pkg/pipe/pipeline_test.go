@@ -3,14 +3,15 @@ package pipe
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/Masterminds/sprig"
-	"github.com/jensneuse/pipeline/pkg/step"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"testing"
 	"text/template"
+
+	"github.com/Masterminds/sprig/v3"
+	"github.com/jensneuse/pipeline/pkg/step"
 )
 
 func TestPipeline_Run_Simple(t *testing.T) {
@@ -59,7 +60,6 @@ func TestPipeline_Run_Simple(t *testing.T) {
 }
 
 func TestPipeline_Run_Complex(t *testing.T) {
-
 	srvBody := `
 		{
 			"policies": {
@@ -170,7 +170,6 @@ func pretty(input string) string {
 }
 
 func BenchmarkPipeline_Run_Complex(b *testing.B) {
-
 	srvBody := `
 		{
 			"policies": {
@@ -234,7 +233,7 @@ func BenchmarkPipeline_Run_Complex(b *testing.B) {
 	b.ResetTimer()
 	b.ReportAllocs()
 
-	for i := 0;i<b.N;i++{
+	for i := 0; i < b.N; i++ {
 		output.Reset()
 		input.Reset()
 

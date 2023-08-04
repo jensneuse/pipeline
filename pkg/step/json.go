@@ -2,10 +2,11 @@ package step
 
 import (
 	"encoding/json"
-	"github.com/Masterminds/sprig"
 	"io"
 	"io/ioutil"
 	"text/template"
+
+	"github.com/Masterminds/sprig/v3"
 )
 
 type JsonStep struct {
@@ -26,7 +27,7 @@ func UnmarshalJsonStep(reader io.Reader) (JsonStep, error) {
 	return step, err
 }
 
-func NewJSON(tmpl string) (step JsonStep,err error) {
+func NewJSON(tmpl string) (step JsonStep, err error) {
 	step.Template = tmpl
 	step.tmpl = template.New("")
 	step.tmpl.Funcs(sprig.TxtFuncMap())
